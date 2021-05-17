@@ -1,3 +1,5 @@
+package HW_java.git;
+
 import java.util.Random;
 import java.util.Scanner;
 
@@ -8,6 +10,7 @@ public class HomeWork04 {
 
         createMap();
         showMap();
+
 
         while (true) {
             humanTurn();
@@ -42,6 +45,7 @@ public class HomeWork04 {
     public static char[][] map;
     public static int mapSizeX;
     public static int mapSizeY;
+    public static int  winLength = mapSizeX;
 
     public static char human = '0';
     public static char ai = 'X';
@@ -119,30 +123,68 @@ public class HomeWork04 {
     }
 
 
-    public static boolean isWin(char player) {
-        int z = 0;
-        if (z != mapSizeY) {
-            z = 0;
-            for (int y = 0; y < mapSizeY; y++) {
-                for (int x = 0; x < mapSizeX; x++) {
-                    if (map[y][x] == player) {
-                        z++;
-                        if (z == mapSizeY) return true;
-                    }
+//    public static boolean isWin(char player) {
+//        int z = 0;
+//        if (z != mapSizeY) {
+//            z = 0;
+//            for (int y = 0; y < mapSizeY; y++) {
+//                for (int x = 0; x < mapSizeX; x++) {
+//                    if (map[y][x] == player) {
+//                        z++;
+//                        if (z == mapSizeY) return true;
+//                    }
+//                }
+//            }
+//        } else {
+//            z = 0;
+//            for (int y = 0; y < mapSizeY; y++) {
+//                if (map[y][map.length - 1 - y] == player) {
+//                    z++;
+//                    if (z == mapSizeY) return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+
+
+    // проверка на победу
+    public static boolean isWin(int player) {
+        for (int i = 0; i < mapSizeX; i++) {     // ползём по всему полю
+            for (int j = 0; j < mapSizeY; j++) {
+                if (checkVector(i, j, 1, 0, mapSizeX, player)) {
+                    return true;    // проверим линию по х
                 }
-            }
-        } else {
-            z = 0;
-            for (int y = 0; y < mapSizeY; y++) {
-                if (map[y][map.length - 1 - y] == player) {
-                    z++;
-                    if (z == mapSizeY) return true;
+                if (checkVector(i, j, 1, 1, mapSizeX, player)) {
+                    return true;    // проверим по диагонали х у
+                }
+                if (checkVector(i, j, 0, 1, mapSizeX, player)) {
+                    return true;    // проверим линию по у
+                }
+                if (checkVector(i, j, 1, -1, mapSizeX, player)) {
+                    return true;    // проверим по диагонали х -у
                 }
             }
         }
         return false;
     }
-}
+
+    // проверка линии
+    public static boolean checkVector(int x, int y, int vx, int vy, int len, int player) {
+        int farX = x + (len - 1) * vx;    // посчитаем конец проверяемой линии
+        int farY = y + (len - 1) * vy;
+        if (!isValidCell(farX, farY)) {
+            return false;    // проверим не выйдет-ли проверяемая линия за пределы поля
+        }
+        for (int i = 0; i < len; i++) {    // ползём по проверяемой линии
+            if (map[y + i * vy][x + i * vx] != player) {
+                return false;    // проверим одинаковые-ли символы в ячейках
+            }
+        }
+        return true;
+    }
+
+
 
 //       if (map[0][0] == player && map[0][1] == player && map[0][2] == player) return true;
 //        if (map[1][0] == player && map[1][1] == player && map[1][2] == player) return true;
@@ -163,3 +205,4 @@ public class HomeWork04 {
 //        map = new char[mapSizeY][mapSizeX];
 //    }
 
+}
